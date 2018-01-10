@@ -16,7 +16,16 @@ router.get('/remote-control', function(req, res, next) {
 
 router.post('/', function(req, res, next) {
     function puts(error,stdout,stderr) { console.log(stdout); }
-    var adbPath = (process.platform == "linux") ? "./platform-tools/ubuntu/adb" : "./platform-tools/adb";
+
+    // adb has a different binary per platform
+    var adbPath = null;
+    if (process.platform == "linux") {
+        adbPath = "./platform-tools/linux/adb"
+    } else if (process.platform == "darwin") {
+        adbPath = "./platform-tools/darwin/adb";
+    } else if (process.platform == "win32") {
+        adbPath = "./platform-tools/win32/adb"
+    }
 
     if (req.body.deviceip != null) {
         console.log("Connecting...");
